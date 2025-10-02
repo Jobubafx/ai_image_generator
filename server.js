@@ -9,10 +9,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware - IMPORTANT: Serve static files BEFORE other middleware
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // OpenRouter API Service
 class OpenRouterService {
@@ -123,7 +123,7 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Serve main app
+// Serve main app - This should be LAST
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

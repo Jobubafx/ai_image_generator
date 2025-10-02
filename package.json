@@ -4,16 +4,21 @@
   "description": "AI Image Generator using Nano Banana via OpenRouter",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "build": "echo 'No build step required for static site'"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "keywords": ["ai", "image-generation", "nano-banana", "openrouter"],
+  "author": "Jobubafx",
+  "license": "MIT"
 }

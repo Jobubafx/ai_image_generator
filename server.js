@@ -23,11 +23,9 @@ class OpenRouterService {
 
     async makeRequest(messages, model = 'google/gemini-2.0-flash-exp:free', maxTokens = 2000) {
         if (!this.apiKey) {
-            throw new Error('OpenRouter API key not configured. Please set OPENROUTER_API_KEY environment variable.');
+            throw new Error('OpenRouter API key not configured');
         }
 
-        console.log('Making API request to OpenRouter with model:', model);
-        
         const response = await fetch(this.baseUrl, {
             method: 'POST',
             headers: {
@@ -45,8 +43,7 @@ class OpenRouterService {
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+            throw new Error(`API error: ${response.status}`);
         }
 
         const data = await response.json();
@@ -54,12 +51,12 @@ class OpenRouterService {
     }
 
     async generateImagePrompt(style, topic = '', aspectRatio = '1:1') {
-        const prompt = `Create a detailed image generation prompt for a ${style} in ${aspectRatio} aspect ratio. ${topic ? `Topic: ${topic}` : ''} Make it professional and high quality.`;
+        const prompt = `Create detailed prompt for ${style} in ${aspectRatio} ratio. ${topic ? `Topic: ${topic}` : ''}`;
         
         const messages = [
             {
                 role: 'system',
-                content: 'You are a creative AI assistant that generates detailed image generation prompts.'
+                content: 'You generate image prompts.'
             },
             {
                 role: 'user',
@@ -78,16 +75,13 @@ app.post('/api/generate-concept', async (req, res) => {
     try {
         const { style, topic, aspectRatio } = req.body;
         
-        console.log('Generating concept:', { style, topic, aspectRatio });
-        
         if (!style) {
-            return res.status(400).json({ error: 'Style is required' });
+            return res.status(400).json({ error: 'Style required' });
         }
 
         const concept = await apiService.generateImagePrompt(style, topic, aspectRatio);
         res.json({ concept });
     } catch (error) {
-        console.error('Error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -96,18 +90,16 @@ app.post('/api/generate-image', async (req, res) => {
     try {
         const { prompt, style, aspectRatio } = req.body;
         
-        console.log('Generating image guidance:', { style, aspectRatio });
-        
         if (!prompt) {
-            return res.status(400).json({ error: 'Prompt is required' });
+            return res.status(400).json({ error: 'Prompt required' });
         }
 
-        const enhancedPrompt = `${prompt}. Style: ${style}. Aspect ratio: ${aspectRatio}. High quality professional image.`;
+        const enhancedPrompt = `${prompt}. Style: ${style}. Ratio: ${aspectRatio}`;
 
         const messages = [
             {
                 role: 'user',
-                content: `Provide guidance for creating this image: ${enhancedPrompt}`
+                content: `Guide for: ${enhancedPrompt}`
             }
         ];
 
@@ -115,49 +107,27 @@ app.post('/api/generate-image', async (req, res) => {
         
         res.json({ 
             success: true, 
-            message: 'Image generation guidance created',
-            prompt: enhancedPrompt,
             guidance: response
         });
     } catch (error) {
-        console.error('Error:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
     res.json({ 
         status: 'OK', 
-        timestamp: new Date().toISOString(),
-        apiKey: process.env.OPENROUTER_API_KEY ? 'Set' : 'Not set',
-        nodeVersion: process.version
+        time: new Date().toISOString(),
+        apiKey: process.env.OPENROUTER_API_KEY ? 'Set' : 'Not set'
     });
 });
 
-// Simple test endpoint
-app.get('/api/test', (req, res) => {
-    res.json({ 
-        status: 'Server is running!',
-        message: 'API endpoints are working',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Serve the main application
+// Serve main app
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Error handling middleware
-app.use((error, req, res, next) => {
-    console.error('Unhandled error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-});
-
-// Start server
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Health: http://0.0.0.0:${PORT}/health`);
-    console.log(`🔑 API Key: ${process.env.OPENROUTER_API_KEY ? '✅ Set' : '❌ Missing'}`);
+    console.log(`Server running on port ${PORT}`);
 });

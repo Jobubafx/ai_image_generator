@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nano Banana AI Image Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎨 AI Image Generator</h1>
+            <p>Powered by Nano Banana & OpenRouter</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section id="upload-section" class="section active">
+            <h2>Upload Reference Images</h2>
+            <div class="upload-area" id="upload-area">
+                <div class="upload-content">
+                    <span class="upload-icon">📁</span>
+                    <p>Drag & drop images here or click to browse</p>
+                    <small>Supports multiple images (PNG, JPG, WebP)</small>
+                </div>
+                <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+            </div>
+            <div id="image-preview" class="image-preview"></div>
+            
+            <div class="action-buttons">
+                <button id="analyze-btn" class="btn btn-primary" disabled>
+                    🎯 Analyze & Remove Background
+                </button>
+                <button id="generate-direct-btn" class="btn btn-secondary" disabled>
+                    ⚡ Generate Without Analysis
+                </button>
+            </div>
+        </section>
+
+        <!-- Style Selection Section -->
+        <section id="style-section" class="section">
+            <h2>Select Design Style</h2>
+            <div class="style-grid">
+                <div class="style-category">
+                    <h3>🎂 Birthday Designs</h3>
+                    <div class="style-options">
+                        <label><input type="radio" name="style" value="birthday-invitation-card"> Birthday Invitation Card</label>
+                        <label><input type="radio" name="style" value="birthday-invitation-flier"> Birthday Invitation Flier</label>
+                        <label><input type="radio" name="style" value="birthday-invitation-poster"> Birthday Invitation Poster</label>
+                        <label><input type="radio" name="style" value="birthday-wish-card"> Birthday Wish Card</label>
+                        <label><input type="radio" name="style" value="birthday-wish-flier"> Birthday Wish Flier</label>
+                        <label><input type="radio" name="style" value="birthday-wish-poster"> Birthday Wish Poster</label>
+                    </div>
+                </div>
+                
+                <div class="style-category">
+                    <h3>💍 Wedding Designs</h3>
+                    <div class="style-options">
+                        <label><input type="radio" name="style" value="wedding-invitation-card"> Wedding Invitation Card</label>
+                        <label><input type="radio" name="style" value="wedding-invitation-flier"> Wedding Invitation Flier</label>
+                        <label><input type="radio" name="style" value="wedding-invitation-poster"> Wedding Invitation Poster</label>
+                        <label><input type="radio" name="style" value="wedding-wish-card"> Wedding Wish Card</label>
+                        <label><input type="radio" name="style" value="wedding-wish-flier"> Wedding Wish Flier</label>
+                        <label><input type="radio" name="style" value="wedding-wish-poster"> Wedding Wish Poster</label>
+                    </div>
+                </div>
+
+                <div class="style-category">
+                    <h3>🎨 Normal Designs</h3>
+                    <div class="style-options">
+                        <label><input type="radio" name="style" value="normal-poster-no-text"> Normal Design Poster (No Text)</label>
+                        <label><input type="radio" name="style" value="normal-flier-no-text"> Normal Design Flier (No Text)</label>
+                        <label><input type="radio" name="style" value="normal-poster-text"> Normal Design Poster (With Text)</label>
+                        <label><input type="radio" name="style" value="normal-flier-text"> Normal Design Flier (With Text)</label>
+                    </div>
+                </div>
+
+                <div class="style-category">
+                    <h3>📱 Social Media</h3>
+                    <div class="style-options">
+                        <label><input type="radio" name="style" value="cinematic-poster"> Cinematic Poster</label>
+                        <label><input type="radio" name="style" value="pinterest-image"> Pinterest Image Pin</label>
+                        <label><input type="radio" name="style" value="pinterest-gif"> Pinterest GIF Pin</label>
+                        <label><input type="radio" name="style" value="pinterest-text"> Pinterest Text Quotes</label>
+                        <label><input type="radio" name="style" value="facebook-image"> Facebook Image Post</label>
+                        <label><input type="radio" name="style" value="facebook-text"> Facebook Text Quotes</label>
+                        <label><input type="radio" name="style" value="banner"> Banner</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aspect-ratio-selection">
+                <h3>Aspect Ratio</h3>
+                <div class="ratio-options">
+                    <label><input type="radio" name="ratio" value="9:16" checked> 9:16 (Portrait)</label>
+                    <label><input type="radio" name="ratio" value="1:1"> 1:1 (Square)</label>
+                    <label><input type="radio" name="ratio" value="16:9"> 16:9 (Landscape)</label>
+                    <label><input type="radio" name="ratio" value="3:4"> 3:4 (Vertical)</label>
+                    <label><input type="radio" name="ratio" value="4:3"> 4:3 (Horizontal)</label>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="back-to-upload" class="btn btn-secondary">← Back</button>
+                <button id="proceed-to-concept" class="btn btn-primary" disabled>Continue →</button>
+            </div>
+        </section>
+
+        <!-- Concept Generation Section -->
+        <section id="concept-section" class="section">
+            <h2>Creative Concept</h2>
+            <div class="concept-options">
+                <div class="option-group">
+                    <label>
+                        <input type="radio" name="concept-type" value="auto" checked>
+                        🚀 Generate AI Concept Prompt
+                    </label>
+                    <label>
+                        <input type="radio" name="concept-type" value="manual">
+                        ✏️ Use Custom Prompt
+                    </label>
+                </div>
+                
+                <div id="topic-input" class="input-group">
+                    <label>Topic (Optional):</label>
+                    <input type="text" id="concept-topic" placeholder="e.g., Beach party, Corporate event, Product launch...">
+                </div>
+
+                <div id="concept-prompt-area" class="input-group">
+                    <label>Creative Concept:</label>
+                    <textarea id="concept-prompt" rows="6" placeholder="AI will generate a creative concept based on your images and selected style..."></textarea>
+                    <button id="generate-concept-btn" class="btn btn-secondary">Generate Concept</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="back-to-style" class="btn btn-secondary">← Back</button>
+                <button id="generate-image-btn" class="btn btn-primary">Generate Image 🎨</button>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress-section" class="section">
+            <div class="progress-container">
+                <h2>Generating Your Image</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p id="progress-text">Initializing AI models...</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="section">
+            <h2>Generated Image</h2>
+            <div class="results-container">
+                <div class="generated-image-container">
+                    <div id="generated-image-placeholder" class="image-placeholder">
+                        <p>Your generated image will appear here</p>
+                    </div>
+                    <div class="image-actions">
+                        <button id="download-btn" class="btn btn-success">📥 Download</button>
+                        <button id="generate-variation-btn" class="btn btn-primary">🔄 Generate Variation</button>
+                        <button id="refine-btn" class="btn btn-secondary">🎨 Refine Image</button>
+                        <button id="save-to-gallery-btn" class="btn btn-outline">💾 Save to Gallery</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Refinement Section -->
+        <section id="refinement-section" class="section">
+            <h2>Refine Image</h2>
+            <div class="refinement-container">
+                <div class="refinement-preview">
+                    <div id="refine-preview" class="image-placeholder">
+                        <p>Image to refine</p>
+                    </div>
+                </div>
+                <div class="refinement-controls">
+                    <div class="input-group">
+                        <label>Refinement Instructions:</label>
+                        <textarea id="refinement-prompt" rows="4" placeholder="E.g., Change background to beach, add sunset lighting, remove text..."></textarea>
+                        <div class="suggestions-dropdown">
+                            <button type="button" class="suggestions-toggle">💡 AI Suggestions</button>
+                            <div class="suggestions-menu">
+                                <div class="suggestion-item">Change background to professional studio</div>
+                                <div class="suggestion-item">Add cinematic lighting effects</div>
+                                <div class="suggestion-item">Increase image resolution and detail</div>
+                                <div class="suggestion-item">Apply professional color grading</div>
+                                <div class="suggestion-item">Add subtle text overlay with modern typography</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="apply-refinement" class="btn btn-primary">Apply Refinement</button>
+                        <button id="cancel-refinement" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery-section" class="section">
+            <h2>Your Gallery</h2>
+            <div class="gallery-controls">
+                <button id="clear-gallery" class="btn btn-danger">Clear Gallery</button>
+            </div>
+            <div id="gallery-grid" class="gallery-grid">
+                <!-- Gallery items will be dynamically added here -->
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <button class="nav-btn active" data-target="upload-section">Upload</button>
+            <button class="nav-btn" data-target="gallery-section">Gallery</button>
+        </nav>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loading-message">Processing your request...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

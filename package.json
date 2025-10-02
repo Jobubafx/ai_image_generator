@@ -1,11 +1,10 @@
 {
   "name": "ai-image-generator",
   "version": "1.0.0",
-  "description": "AI Image Generator using Nano Banana via OpenRouter",
+  "description": "AI Image Generator",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

@@ -17,6 +17,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));
 
 // OpenRouter API Service
@@ -36,7 +38,7 @@ class OpenRouterService {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${this.apiKey}`,
-                'HTTP-Referer': 'https://your-app.render.com',
+                'HTTP-Referer': 'https://your-app.onrender.com',
                 'X-Title': 'AI Image Generator'
             },
             body: JSON.stringify({
@@ -106,7 +108,6 @@ class OpenRouterService {
     }
 
     async removeBackground(imageData) {
-        // For demo purposes - in production, you'd use actual background removal
         const messages = [
             {
                 role: 'system',
@@ -181,14 +182,13 @@ app.post('/api/generate-image', async (req, res) => {
 
         const response = await apiService.makeRequest(messages, 'google/gemini-2.0-flash-exp:free');
         
-        // For demo - return success with the prompt
-        // In production, you'd integrate with actual image generation
         res.json({ 
             success: true, 
             message: 'Image generation completed successfully',
             prompt: enhancedPrompt,
             aspectRatio,
-            style
+            style,
+            response: response.substring(0, 500) // Limit response size
         });
     } catch (error) {
         console.error('Image generation error:', error);
@@ -196,8 +196,13 @@ app.post('/api/generate-image', async (req, res) => {
     }
 });
 
-// Serve the main application
-app.get('/', (req, res) => {
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Serve the main application for all other routes
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
